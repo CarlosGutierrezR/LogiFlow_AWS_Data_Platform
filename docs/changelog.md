@@ -22,6 +22,14 @@
 - Evidencia de ejecución en Windows: Terraform v1.15.8, provider aws v6.55.0 (signed), `terraform validate` OK, `terraform plan` sin cambios. `.terraform.lock.hcl` generado (se versiona).
 - Sin recursos creados; coste cero.
 
+## 2026-07-22 — Fase 3: capa de almacenamiento S3 desplegada
+
+- `terraform apply`: 25 recursos creados sin errores (evidencia: "Apply complete! Resources: 25 added, 0 changed, 0 destroyed").
+- 5 buckets en eu-west-1: logiflow-dev-{landing,raw,processed,curated,quarantine}-<account_id>.
+- Configuración: Block Public Access total, SSE-S3, versionado en raw/curated, expiración landing 30d / quarantine 90d, limpieza de multiparts (7d), tags automáticos.
+- Estado de Terraform: backend local (terraform.tfstate, no versionado). Migración a backend S3 pendiente de fase posterior.
+- Coste: buckets vacíos, 0 USD. Rollback: `terraform destroy` (vaciar buckets antes si contienen datos).
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).

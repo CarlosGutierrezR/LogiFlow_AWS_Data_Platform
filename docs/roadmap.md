@@ -7,7 +7,7 @@ Estados: `pendiente` | `en curso` | `completada (con evidencia)`.
 | 0 | Fundación del repositorio: estructura, docs, git local | en curso |
 | 1 | Cuenta AWS segura: creación, MFA, identidad de trabajo, presupuesto y alarmas, AWS CLI | completada con evidencia, salvo MFA/rotación de contraseña de root (pendiente, responsabilidad de Carlos) |
 | 2 | Bootstrap Terraform: backend de estado, proveedor, tags, verificación de región (ADR-002) | completada (evidencia 2026-07-22: TF 1.15.8, provider aws 6.55.0, validate y plan limpios; región eu-west-1 decidida) |
-| 3 | Capa de almacenamiento: buckets S3 (landing/raw/processed/curated/quarantine), cifrado, public access block, políticas | pendiente |
+| 3 | Capa de almacenamiento: buckets S3 (landing/raw/processed/curated/quarantine), cifrado, public access block, políticas | completada (evidencia 2026-07-22: apply de 25 recursos, outputs con los 5 buckets en eu-west-1) |
 | 4 | Contratos de datos + generador de datos sintéticos de logística con errores controlados | pendiente |
 | 5 | Ingestión batch a landing + catalogación (Glue Catalog, crawlers) | pendiente |
 | 6 | ETL PySpark landing→raw→processed + pruebas unitarias locales | pendiente |
