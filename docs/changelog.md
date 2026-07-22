@@ -55,6 +55,16 @@
 - Evidencia: 6/6 pruebas pasadas en Spark 3.5.9 + Java 11 (runtime equivalente a Glue 5.0), incluida la detección del 100 % de errores inyectados y reconciliación en 5 entidades.
 - Pendiente (6b): despliegue como Glue jobs (Terraform), ejecución real en AWS y coste asociado.
 
+## 2026-07-22 — Fase 6b: ETL desplegado y ejecutado en AWS
+
+- terraform/glue_jobs.tf (11 recursos): bucket de artefactos, src.zip + entry points, rol IAM por capas, 2 jobs Glue 5.0 (G.1X ×2, timeout 10 min, sin reintentos, bajo demanda).
+- Evidencia final: 4 runs SUCCEEDED (l2r 135s/108s, r2p 126s/78s) para 2026-07-22 y 2026-07-23; particiones en processed y quarantine de ambos días.
+- Incidencias reales resueltas (documentadas en runbook):
+  1. `SystemExit: 0` → Glue marca FAILED si el script llama a sys.exit() aunque el código sea 0; corregido en los entry points.
+  2. Carrera de dependencia: r2p lanzado antes de que l2r terminara → PATH_NOT_FOUND; motiva la orquestación (Fase 9).
+  3. `ConcurrentRunsExceededException`: un run recién terminado sigue contando para el límite de concurrencia unos segundos.
+- Coste: ~9 runs de Glue en total durante la fase (incl. fallidos) — verificar importe real en Billing y anotar en cost-control.md.
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).
