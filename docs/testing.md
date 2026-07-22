@@ -1,6 +1,11 @@
 # Estrategia de pruebas
 
-Pendiente de implementación (desde Fase 4 en adelante). Enfoque previsto:
+## Estado actual
+
+- Fase 4: `tests/test_data_generator.py` — 13 pruebas del generador (contratos, claves, FK, enums, rangos, coherencia temporal, reproducibilidad por semilla, inyección de errores con manifiesto, CLI end-to-end). Última ejecución: 2026-07-22, 13/13 passed (Python 3.10.12, pytest 9.1.1).
+- Ejecución: `python -m pytest tests/ -v` desde la raíz del repositorio (requiere `pip install pytest`).
+
+## Enfoque general
 
 - **Unitarias:** transformaciones PySpark con datos controlados (pytest, ejecución local).
 - **De calidad:** reglas Glue Data Quality por dataset + reconciliación de conteos entre capas.

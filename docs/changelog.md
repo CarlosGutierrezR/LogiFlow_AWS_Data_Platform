@@ -30,6 +30,14 @@
 - Estado de Terraform: backend local (terraform.tfstate, no versionado). Migración a backend S3 pendiente de fase posterior.
 - Coste: buckets vacíos, 0 USD. Rollback: `terraform destroy` (vaciar buckets antes si contienen datos).
 
+## 2026-07-22 — Fase 4: contratos de datos y generador sintético
+
+- docs/data-contracts.md v1.0 aprobado por Carlos: 5 entidades (warehouses, routes, orders, shipments CSV; delivery_events JSONL), reglas de calidad y taxonomía de errores E01-E07.
+- src/data_generator/: config, generator, error_injector, writers, main (CLI). Solo stdlib; reproducible por semilla; logging estructurado; manifiesto JSON de errores inyectados.
+- tests/test_data_generator.py: 13 pruebas (unicidad PK, FK, enums, rangos, coherencia temporal, reproducibilidad, inyección, CLI end-to-end). Evidencia: 13/13 passed (Python 3.10, pytest 9.1.1).
+- Ejecución real: 558 filas, 5 entidades, particionado ingest_date=YYYY-MM-DD, 13 errores inyectados y registrados. Salida en data/local/ (no versionada).
+- Sin recursos AWS nuevos; coste cero.
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).
