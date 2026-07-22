@@ -11,7 +11,7 @@ Estados: `pendiente` | `en curso` | `completada (con evidencia)`.
 | 4 | Contratos de datos + generador de datos sintéticos de logística con errores controlados | completada (evidencia 2026-07-22: contratos v1.0 aprobados; 13/13 tests pytest; ejecución real con 558 filas y manifiesto de 13 errores) |
 | 5 | Ingestión batch a landing + catalogación (Glue Catalog, crawlers) | completada (evidencia 2026-07-22: 12 archivos subidos con idempotencia demostrada; crawler catalogó 5 tablas con particiones ingest_date) |
 | 6 | ETL PySpark landing→raw→processed + pruebas unitarias locales | completada (evidencia 2026-07-22: 6/6 tests Spark local + 4 runs SUCCEEDED en Glue 5.0 con 2 días procesados; quarantine y reconciliación operativas) |
-| 7 | Calidad de datos (Glue Data Quality) + cuarentena + reconciliación | pendiente |
+| 7 | Calidad de datos (Glue Data Quality) + cuarentena + reconciliación | completada (evidencia 2026-07-22: cuarentena y reconciliación en F6; catálogo processed con 5 tablas; ruleset DQ evaluado con Score 1.0, 7/7 PASS) |
 | 8 | Modelo dimensional en curated + Athena | pendiente |
 | 9 | Orquestación: Step Functions + EventBridge + reintentos | pendiente |
 | 10 | Observabilidad: CloudWatch, SNS, logging estructurado, runbook | pendiente |

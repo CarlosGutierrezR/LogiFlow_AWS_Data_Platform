@@ -65,6 +65,13 @@
   3. `ConcurrentRunsExceededException`: un run recién terminado sigue contando para el límite de concurrencia unos segundos.
 - Coste: ~9 runs de Glue en total durante la fase (incl. fallidos) — verificar importe real en Billing y anotar en cost-control.md.
 
+## 2026-07-22 — Fase 7: catálogo de processed + Glue Data Quality
+
+- terraform/glue_quality.tf: base de datos logiflow_dev_processed, crawler bajo demanda con rol de lectura restringida, y 2 rulesets DQ (orders, shipments) gateados con variable enable_dq_rulesets (despliegue en 2 pasos porque los rulesets referencian tablas del crawler).
+- Evidencia: crawler catalogó las 5 tablas de processed; evaluación DQ sobre orders con **Score 1.0 y 7/7 reglas PASS** (run dqrun-81aa9e50...).
+- La validación custom del ETL (F6) y la verificación gestionada (Glue DQ) quedan como doble control de calidad, cada una con su rol: la primera limpia y pone en cuarentena, la segunda certifica.
+- Coste: 1 run de crawler + 1 evaluación DQ (DPU-tiempo, céntimos). Pendiente consolidar importes reales en Billing.
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).
