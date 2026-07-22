@@ -19,4 +19,4 @@
 
 | Fecha | Fase | Servicios activos | Coste observado | Fuente |
 |---|---|---|---|---|
-| — | — | ninguno | 0 (sin cuenta aún) | — |
+| 2026-07-22 | 1 | ninguno (solo AWS Budgets, sin coste) | 0 | Presupuesto `logiflow-zero-spend-budget` creado; confirmación en consola |

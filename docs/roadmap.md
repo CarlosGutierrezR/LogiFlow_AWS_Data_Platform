@@ -5,7 +5,7 @@ Estados: `pendiente` | `en curso` | `completada (con evidencia)`.
 | Fase | Contenido | Estado |
 |---|---|---|
 | 0 | Fundación del repositorio: estructura, docs, git local | en curso |
-| 1 | Cuenta AWS segura: creación, MFA, identidad de trabajo, presupuesto y alarmas, AWS CLI | pendiente (bloquea todo lo demás) |
+| 1 | Cuenta AWS segura: creación, MFA, identidad de trabajo, presupuesto y alarmas, AWS CLI | completada con evidencia, salvo MFA/rotación de contraseña de root (pendiente, responsabilidad de Carlos) |
 | 2 | Bootstrap Terraform: backend de estado, proveedor, tags, verificación de región (ADR-002) | pendiente |
 | 3 | Capa de almacenamiento: buckets S3 (landing/raw/processed/curated/quarantine), cifrado, public access block, políticas | pendiente |
 | 4 | Contratos de datos + generador de datos sintéticos de logística con errores controlados | pendiente |

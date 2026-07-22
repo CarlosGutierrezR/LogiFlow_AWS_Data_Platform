@@ -6,23 +6,25 @@ Objetivo: cuenta AWS personal lista para desplegar con Terraform, sin usar root 
 
 ## 1. Crear la cuenta
 
-- [ ] Registrarse en https://aws.amazon.com con un email dedicado y contraseña fuerte (gestor de contraseñas).
-- [ ] Requiere tarjeta de crédito/débito y verificación telefónica.
-- [ ] Plan de soporte: Basic (gratuito).
+- [x] Registrarse en https://aws.amazon.com con un email dedicado y contraseña fuerte (gestor de contraseñas).
+- [x] Requiere tarjeta de crédito/débito y verificación telefónica.
+- [x] Plan de soporte: Basic (gratuito).
 
 ## 2. Asegurar el usuario root
 
 - [ ] Activar MFA en root (app de autenticación o passkey).
-- [ ] No crear claves de acceso (access keys) para root.
-- [ ] Guardar las credenciales root en el gestor de contraseñas; no volver a usarlas salvo necesidad administrativa.
+- [x] No crear claves de acceso (access keys) para root.
+- [x] Guardar las credenciales root en el gestor de contraseñas; no volver a usarlas salvo necesidad administrativa.
 
 ## 3. Control de costes (antes que cualquier recurso)
 
-- [ ] AWS Budgets: presupuesto mensual con alertas por email a chgut31@gmail.com (umbral bajo, p. ej. 5–10 USD, con avisos al 50/80/100 %).
+- [x] AWS Budgets: presupuesto `logiflow-zero-spend-budget` (plantilla de gasto cero, alerta a chgut31@gmail.com si el gasto supera 0,01 USD). Creado 2026-07-22 vía consola.
 - [ ] Activar alertas de facturación (Billing preferences → alerts).
 - [ ] Verificar condiciones de free tier vigentes en https://aws.amazon.com/free (no asumir las de esta guía).
 
 ## 4. Identidad de trabajo (no root)
+
+> ACTUALIZACIÓN 2026-07-22 (ADR-006): se descartó Identity Center para conservar el plan gratuito (crear Organizations convierte la cuenta a pago por uso y caducan los créditos). Creado usuario IAM `carlos-admin` con AdministratorAccess, contraseña autogenerada y cambio obligatorio al primer inicio. URL de consola: https://503782778600.signin.aws.amazon.com/console — pendiente: primer login de Carlos, contraseña definitiva y MFA del usuario. La sección siguiente queda como referencia histórica.
 
 Opción recomendada — IAM Identity Center (credenciales temporales):
 - [ ] Habilitar IAM Identity Center en la región elegida.
@@ -32,6 +34,14 @@ Opción recomendada — IAM Identity Center (credenciales temporales):
 - [ ] Login diario: `aws sso login --profile logiflow-dev`.
 
 Alternativa si Identity Center resulta un bloqueo: usuario IAM con MFA y claves de acceso locales (nunca versionadas), documentando el motivo en decisions.md.
+
+## 4b. Evidencia CLI (2026-07-22)
+
+- AWS CLI 2.36.5 instalada en Windows 11 (instalador oficial MSI usuario).
+- `aws configure set region eu-south-2` aplicado.
+- `aws login` completado vía navegador con la sesión de carlos-admin (sin access keys).
+- `aws sts get-caller-identity` → `arn:aws:iam::<ACCOUNT_ID>:user/carlos-admin` ✔
+- PENDIENTE de seguridad: MFA del usuario root y rotación de su contraseña (expuesta el 2026-07-22).
 
 ## 5. Verificación de región (ADR-002)
 

@@ -36,3 +36,21 @@ Estados: `propuesta` | `aprobada` | `supuesto pendiente de verificación` | `ree
 - **Contexto:** no existe cuenta AWS. Es prerrequisito de cualquier despliegue.
 - **Decisión:** crear cuenta personal siguiendo docs/aws-account-setup.md: MFA en root, root solo para lo imprescindible, identidad de trabajo con IAM Identity Center (o usuario IAM con MFA como alternativa), AWS Budgets con alertas antes de crear cualquier recurso.
 - **Consecuencias:** la Fase 1 (bootstrap de Terraform) queda bloqueada hasta completar esta configuración con evidencia.
+
+## ADR-005 — Autenticación CLI con `aws login` y Agent Toolkit for AWS
+
+- **Fecha:** 2026-07-22
+- **Estado:** aprobada
+- **Contexto:** AWS publicó `aws login` (nov. 2025, CLI ≥ 2.32.0): credenciales temporales vinculadas a la sesión de consola del navegador, sin access keys permanentes. El Agent Toolkit for AWS (jun. 2026, `aws configure agent-toolkit`, servicio solo en us-east-1) configura MCP server y skills para agentes de código.
+- **Decisión:** usar `aws login` como método de autenticación de la CLI (sustituye el flujo `aws configure sso` previsto), siempre iniciando sesión con el usuario de trabajo de Identity Center, nunca con root. Instalar el Agent Toolkit como herramienta de desarrollo. El archivo de reglas del toolkit (paso 7 del setup) se revisará antes de incorporarlo a CLAUDE.md por posible conflicto con las reglas propias del proyecto.
+- **Consecuencias:** sin claves de acceso de larga duración en la máquina local; la región del toolkit (us-east-1) es independiente de la región del proyecto (ADR-002).
+- **Referencias:** https://aws.amazon.com/blogs/security/simplified-developer-access-to-aws-with-aws-login · https://aws.amazon.com/about-aws/whats-new/2026/06/aws-cli-agent-toolkit/
+
+## ADR-006 — Usuario IAM clásico en lugar de IAM Identity Center
+
+- **Fecha:** 2026-07-22
+- **Estado:** aprobada (decisión de Carlos)
+- **Contexto:** al intentar habilitar IAM Identity Center, la consola advirtió que crear AWS Organizations convierte automáticamente la cuenta de plan gratuito a pago por uso y **los créditos del nivel gratuito caducan inmediatamente**. La cuenta está en el plan gratuito de AWS (modelo de cuenta con créditos y límite de gasto), valioso para un proyecto de portafolio.
+- **Decisión:** crear el usuario IAM `carlos-admin` (consola + `AdministratorAccess` + `IAMUserChangePassword`, contraseña autogenerada con restablecimiento obligatorio) y posponer Identity Center. `aws login` funciona igualmente con usuarios IAM (SignInLocalDevelopmentAccess), así que ADR-005 no cambia.
+- **Consecuencias:** se conservan plan gratuito y créditos. Restricción de mínimo privilegio pendiente: `AdministratorAccess` es temporal de arranque; se sustituirá por políticas acotadas cuando la infraestructura esté estable (deuda de seguridad registrada). Migración a Identity Center posible más adelante con ADR propio.
+- **Evidencia:** aviso de la consola en pantalla de habilitación de Identity Center (2026-07-22); confirmación "La persona se ha creado correctamente".
