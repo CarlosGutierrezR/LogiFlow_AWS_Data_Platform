@@ -46,6 +46,15 @@
 - Evidencia: 12 archivos (2 días × 5 entidades + 2 manifiestos) en s3://logiflow-dev-landing-.../; reejecución con "subidos=0 omitidos=6"; crawler catalogó 5 tablas y particiones ["2026-07-22","2026-07-23"].
 - Coste: primeras ejecuciones facturables (3 pasadas de crawler, una en vacío). Importe esperado: céntimos; verificar en Billing y registrar en cost-control.md.
 
+## 2026-07-22 — Fase 6a: ETL PySpark (desarrollo y pruebas locales)
+
+- src/etl/schemas.py: esquemas explícitos y reglas por entidad (fuente de verdad: data-contracts v1.0); processed nunca usa los esquemas inferidos por el crawler.
+- src/etl/landing_to_raw.py: conserva el dato original (todo string) + linaje (_ingest_date, _source_file, _load_ts, _batch_id); Parquet particionado; idempotente por sobrescritura de partición.
+- src/etl/raw_to_processed.py: dedup por PK, validación de obligatorios/enums/rangos/timestamps/coherencia temporal/FKs (contra filas válidas, dimensiones→hechos), tipado al contrato; inválidas a quarantine con motivos "Exx:campo:detalle"; reconciliación estricta de conteos (falla el job si no cuadra).
+- Jobs portables: argparse (sin dependencia de awsglue); mismo script en Spark local y Glue.
+- Evidencia: 6/6 pruebas pasadas en Spark 3.5.9 + Java 11 (runtime equivalente a Glue 5.0), incluida la detección del 100 % de errores inyectados y reconciliación en 5 entidades.
+- Pendiente (6b): despliegue como Glue jobs (Terraform), ejecución real en AWS y coste asociado.
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).
