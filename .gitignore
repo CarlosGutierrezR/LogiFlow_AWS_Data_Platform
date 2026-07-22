@@ -1,6 +1,8 @@
 # Terraform
 **/.terraform/
 terraform/.build/
+terraform/*.json
+!terraform/*.tfvars.json
 *.tfstate
 *.tfstate.*
 *.tfplan
