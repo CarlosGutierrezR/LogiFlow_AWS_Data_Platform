@@ -20,3 +20,5 @@
 | Fecha | Fase | Servicios activos | Coste observado | Fuente |
 |---|---|---|---|---|
 | 2026-07-22 | 1 | ninguno (solo AWS Budgets, sin coste) | 0 | Presupuesto `logiflow-zero-spend-budget` creado; confirmación en consola |
+| 2026-07-22 | 3 | 5 buckets S3 vacíos → con ~187 KB | ~0 (verificar en Billing en 24-48 h) | Almacenamiento insignificante; PUTs de 18 objetos |
+| 2026-07-22 | 5 | Glue: 3 ejecuciones de crawler (1 en vacío) | céntimos estimados — PENDIENTE verificar importe real en Billing | Primer servicio facturable del proyecto; crawler sin schedule |

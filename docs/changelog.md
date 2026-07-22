@@ -38,6 +38,14 @@
 - Ejecución real: 558 filas, 5 entidades, particionado ingest_date=YYYY-MM-DD, 13 errores inyectados y registrados. Salida en data/local/ (no versionada).
 - Sin recursos AWS nuevos; coste cero.
 
+## 2026-07-22 — Fase 5: ingestión a S3 y catalogación
+
+- src/ingestion/upload_landing.py: subida idempotente (omite objetos existentes con mismo tamaño) con cliente S3 inyectable; 6 pruebas nuevas (19 en total, todas pasando en Linux/py3.10 y Windows/py3.14).
+- Dependencias de ejecución: boto3 + botocore[crt] (el proveedor de credenciales de `aws login` requiere awscrt; detectado y resuelto durante la fase).
+- terraform/glue_catalog.tf aplicado (5 recursos): base de datos logiflow_dev_landing, rol de crawler con lectura restringida al bucket landing, crawler bajo demanda sin schedule.
+- Evidencia: 12 archivos (2 días × 5 entidades + 2 manifiestos) en s3://logiflow-dev-landing-.../; reejecución con "subidos=0 omitidos=6"; crawler catalogó 5 tablas y particiones ["2026-07-22","2026-07-23"].
+- Coste: primeras ejecuciones facturables (3 pasadas de crawler, una en vacío). Importe esperado: céntimos; verificar en Billing y registrar en cost-control.md.
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).

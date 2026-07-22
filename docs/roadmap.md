@@ -9,7 +9,7 @@ Estados: `pendiente` | `en curso` | `completada (con evidencia)`.
 | 2 | Bootstrap Terraform: backend de estado, proveedor, tags, verificación de región (ADR-002) | completada (evidencia 2026-07-22: TF 1.15.8, provider aws 6.55.0, validate y plan limpios; región eu-west-1 decidida) |
 | 3 | Capa de almacenamiento: buckets S3 (landing/raw/processed/curated/quarantine), cifrado, public access block, políticas | completada (evidencia 2026-07-22: apply de 25 recursos, outputs con los 5 buckets en eu-west-1) |
 | 4 | Contratos de datos + generador de datos sintéticos de logística con errores controlados | completada (evidencia 2026-07-22: contratos v1.0 aprobados; 13/13 tests pytest; ejecución real con 558 filas y manifiesto de 13 errores) |
-| 5 | Ingestión batch a landing + catalogación (Glue Catalog, crawlers) | pendiente |
+| 5 | Ingestión batch a landing + catalogación (Glue Catalog, crawlers) | completada (evidencia 2026-07-22: 12 archivos subidos con idempotencia demostrada; crawler catalogó 5 tablas con particiones ingest_date) |
 | 6 | ETL PySpark landing→raw→processed + pruebas unitarias locales | pendiente |
 | 7 | Calidad de datos (Glue Data Quality) + cuarentena + reconciliación | pendiente |
 | 8 | Modelo dimensional en curated + Athena | pendiente |
