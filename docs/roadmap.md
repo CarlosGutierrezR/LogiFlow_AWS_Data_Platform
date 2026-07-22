@@ -1,0 +1,22 @@
+# Roadmap por fases
+
+Estados: `pendiente` | `en curso` | `completada (con evidencia)`.
+
+| Fase | Contenido | Estado |
+|---|---|---|
+| 0 | Fundación del repositorio: estructura, docs, git local | en curso |
+| 1 | Cuenta AWS segura: creación, MFA, identidad de trabajo, presupuesto y alarmas, AWS CLI | pendiente (bloquea todo lo demás) |
+| 2 | Bootstrap Terraform: backend de estado, proveedor, tags, verificación de región (ADR-002) | pendiente |
+| 3 | Capa de almacenamiento: buckets S3 (landing/raw/processed/curated/quarantine), cifrado, public access block, políticas | pendiente |
+| 4 | Contratos de datos + generador de datos sintéticos de logística con errores controlados | pendiente |
+| 5 | Ingestión batch a landing + catalogación (Glue Catalog, crawlers) | pendiente |
+| 6 | ETL PySpark landing→raw→processed + pruebas unitarias locales | pendiente |
+| 7 | Calidad de datos (Glue Data Quality) + cuarentena + reconciliación | pendiente |
+| 8 | Modelo dimensional en curated + Athena | pendiente |
+| 9 | Orquestación: Step Functions + EventBridge + reintentos | pendiente |
+| 10 | Observabilidad: CloudWatch, SNS, logging estructurado, runbook | pendiente |
+| 11 | Publicación en GitHub + CI/CD (GitHub Actions: lint, fmt, validate, tests) | pendiente |
+| 12 | Cierre del núcleo: documentación final, evidencias, destrucción controlada y coste real | pendiente |
+| 13+ | Extensiones (streaming, Lake Formation, Redshift, QuickSight, Iceberg) — cada una con ADR propio | pendiente |
+
+Regla: ninguna fase se marca completada sin evidencia real de ejecución.

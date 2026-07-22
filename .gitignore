@@ -1,0 +1,49 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+.terraform.lock.hcl.backup
+override.tf
+override.tf.json
+
+# Credenciales y secretos — NUNCA versionar
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials
+config.local.*
+.aws/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+.coverage
+htmlcov/
+
+# Datos locales (los sintéticos versionados irán en data/samples/)
+data/local/
+*.parquet
+!data/samples/**
+
+# IDE / SO
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
