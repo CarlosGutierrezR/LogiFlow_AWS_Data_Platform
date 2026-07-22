@@ -15,6 +15,13 @@
 - AWS CLI 2.36.5 en Windows 11; `aws login` con credenciales temporales; `aws sts get-caller-identity` verifica `user/carlos-admin`. Región CLI por defecto: eu-south-2.
 - Excepción abierta: MFA y rotación de contraseña del usuario root.
 
+## 2026-07-22 — Fase 2: bootstrap de Terraform
+
+- ADR-002 resuelta: verificado en consola que Glue Data Quality NO está en eu-south-2; región del proyecto: **eu-west-1** (decisión de Carlos). CLI reconfigurada.
+- Creado `terraform/`: versions.tf (TF >=1.9 <2.0, provider aws ~> 6.0), providers.tf (default_tags), variables.tf (con validaciones), locals.tf, terraform.tfvars.example.
+- Evidencia de ejecución en Windows: Terraform v1.15.8, provider aws v6.55.0 (signed), `terraform validate` OK, `terraform plan` sin cambios. `.terraform.lock.hcl` generado (se versiona).
+- Sin recursos creados; coste cero.
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).

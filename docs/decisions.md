@@ -13,10 +13,14 @@ Estados: `propuesta` | `aprobada` | `supuesto pendiente de verificación` | `ree
 - **Decisión:** simular una empresa de logística (pedidos, envíos, rutas, almacenes, estados de entrega). Coherente con el nombre LogiFlow y diferenciador frente a los proyectos previos del autor (ventas, finanzas).
 - **Consecuencias:** los contratos de datos y el modelo dimensional (fase de diseño) se definirán sobre entidades logísticas.
 
-## ADR-002 — Región AWS: preferencia eu-south-2, verificación pendiente
+## ADR-002 — Región AWS: eu-west-1 (resuelta)
 
-- **Fecha:** 2026-07-22
-- **Estado:** supuesto pendiente de verificación
+- **Fecha:** 2026-07-22 (resuelta el mismo día)
+- **Estado:** aprobada
+- **Resolución:** verificado en la consola de la cuenta (sesión carlos-admin, 2026-07-22) que AWS Glue en eu-south-2 NO ofrece la sección Data Quality (menú completo revisado). Decisión de Carlos: usar **eu-west-1** para todo el proyecto por cobertura completa de servicios. La región sigue siendo variable de Terraform.
+
+Contexto original:
+- **Estado previo:** supuesto pendiente de verificación
 - **Contexto:** el usuario prefiere eu-south-2 (España) por cercanía. Verificado en documentación oficial: AWS Glue está disponible en eu-south-2 desde abril de 2023 (AWS What's New, 2023-04-05). NO confirmado: disponibilidad de Glue Data Quality en eu-south-2. Confirmado además que las sesiones interactivas de Glue no están disponibles en eu-south-2 (docs de AWS Glue, consultado 2026-07-22).
 - **Decisión:** la región será variable de Terraform (`var.aws_region`). Antes del primer despliegue de Glue se verificará Glue Data Quality en eu-south-2 desde la cuenta (consola/CLI). Si no está disponible, fallback aprobado: eu-west-1 (Irlanda).
 - **Consecuencias:** ningún nombre de recurso debe codificar la región de forma rígida.
