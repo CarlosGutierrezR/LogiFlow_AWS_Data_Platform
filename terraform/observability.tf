@@ -73,7 +73,7 @@ resource "aws_cloudwatch_metric_alarm" "glue_job_failed" {
   namespace   = "Glue"
   metric_name = "glue.driver.aggregate.numFailedTasks"
   dimensions = {
-    JobName = each.value
+    JobName  = each.value
     JobRunId = "ALL"
     Type     = "count"
   }

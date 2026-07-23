@@ -232,8 +232,8 @@ resource "aws_glue_job" "processed_to_curated" {
 output "glue_etl_jobs" {
   description = "Jobs de ETL desplegados (ejecutar con start-job-run)."
   value = {
-    landing_to_raw      = aws_glue_job.landing_to_raw.name
-    raw_to_processed    = aws_glue_job.raw_to_processed.name
+    landing_to_raw       = aws_glue_job.landing_to_raw.name
+    raw_to_processed     = aws_glue_job.raw_to_processed.name
     processed_to_curated = aws_glue_job.processed_to_curated.name
   }
 }
