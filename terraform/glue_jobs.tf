@@ -69,6 +69,13 @@ resource "aws_s3_object" "entry_raw_to_processed" {
   source_hash = filebase64sha256("${path.module}/../ops/glue_entries/raw_to_processed_entry.py")
 }
 
+resource "aws_s3_object" "entry_processed_to_curated" {
+  bucket      = aws_s3_bucket.artifacts.id
+  key         = "etl/processed_to_curated_entry.py"
+  source      = "${path.module}/../ops/glue_entries/processed_to_curated_entry.py"
+  source_hash = filebase64sha256("${path.module}/../ops/glue_entries/processed_to_curated_entry.py")
+}
+
 # ---------- Rol IAM de los jobs (mínimo privilegio por capa) ----------
 
 resource "aws_iam_role" "glue_etl" {
@@ -107,6 +114,7 @@ resource "aws_iam_role_policy" "glue_etl_s3" {
           aws_s3_bucket.data_layer["raw"].arn,
           aws_s3_bucket.data_layer["processed"].arn,
           aws_s3_bucket.data_layer["quarantine"].arn,
+          aws_s3_bucket.data_layer["curated"].arn,
           aws_s3_bucket.artifacts.arn,
         ]
       },
@@ -127,6 +135,7 @@ resource "aws_iam_role_policy" "glue_etl_s3" {
           "${aws_s3_bucket.data_layer["raw"].arn}/*",
           "${aws_s3_bucket.data_layer["processed"].arn}/*",
           "${aws_s3_bucket.data_layer["quarantine"].arn}/*",
+          "${aws_s3_bucket.data_layer["curated"].arn}/*",
         ]
       }
     ]
@@ -195,10 +204,36 @@ resource "aws_glue_job" "raw_to_processed" {
   }
 }
 
+resource "aws_glue_job" "processed_to_curated" {
+  name              = "${local.name_prefix}-processed-to-curated"
+  role_arn          = aws_iam_role.glue_etl.arn
+  glue_version      = "5.0"
+  worker_type       = "G.1X"
+  number_of_workers = 2
+  timeout           = 10
+  max_retries       = 0
+
+  command {
+    name            = "glueetl"
+    script_location = "s3://${aws_s3_bucket.artifacts.bucket}/${aws_s3_object.entry_processed_to_curated.key}"
+    python_version  = "3"
+  }
+
+  default_arguments = merge(local.glue_job_common_args, {
+    "--processed-path" = "s3://${aws_s3_bucket.data_layer["processed"].bucket}"
+    "--curated-path"   = "s3://${aws_s3_bucket.data_layer["curated"].bucket}"
+  })
+
+  tags = {
+    layer = "curated"
+  }
+}
+
 output "glue_etl_jobs" {
   description = "Jobs de ETL desplegados (ejecutar con start-job-run)."
   value = {
-    landing_to_raw   = aws_glue_job.landing_to_raw.name
-    raw_to_processed = aws_glue_job.raw_to_processed.name
+    landing_to_raw      = aws_glue_job.landing_to_raw.name
+    raw_to_processed    = aws_glue_job.raw_to_processed.name
+    processed_to_curated = aws_glue_job.processed_to_curated.name
   }
 }
