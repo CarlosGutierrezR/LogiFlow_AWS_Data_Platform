@@ -89,6 +89,13 @@
 - Evidencia: ejecución end-to-end con input {"ingest_date":"2026-07-23"} → SUCCEEDED en ~5 min (3 jobs en serie, sin carreras ni intervención manual). Resuelve las condiciones de carrera de la Fase 6.
 - Coste: 3 runs de Glue por ejecución del pipeline (DPU-tiempo). El state machine STANDARD factura por transición de estado (céntimos).
 
+## 2026-07-23 — Fase 10: observabilidad (CloudWatch + SNS)
+
+- terraform/observability.tf: tema SNS logiflow-dev-alerts con suscripción email (var.alert_email); alarma pipeline_failed sobre AWS/States ExecutionsFailed (señal principal); 4 alarmas totales (pipeline + numFailedTasks por cada job Glue).
+- Evidencia: 6 recursos creados; alarmas en INSUFFICIENT_DATA (normal sin métricas recientes). Suscripción email en PendingConfirmation → requiere que Carlos pulse "Confirm subscription" en el correo.
+- Limitación documentada: numFailedTasks detecta fallos de tareas Spark, no todos los fallos de job (p.ej. SystemExit). La alarma del pipeline (ExecutionsFailed) es la de referencia y cubre cualquier fallo de la cadena orquestada.
+- Coste: SNS y CloudWatch alarmas a este volumen son céntimos o dentro de free tier.
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).
