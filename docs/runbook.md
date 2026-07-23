@@ -44,4 +44,18 @@ aws glue get-job-runs --job-name logiflow-dev-landing-to-raw --query "JobRuns[0]
 | `ConcurrentRunsExceededException` | Run recién terminado aún cuenta para el límite | Esperar ~30 s y reintentar |
 | Job "SUCCEEDED" tras leer datos parciales | Carrera lectura/escritura entre jobs | Relanzar raw-to-processed (idempotente) |
 
+## Ejecución orquestada (Fase 9 — recomendada)
+
+Un solo disparo ejecuta las 3 etapas en orden con esperas y reintentos:
+
+```powershell
+$SM = terraform output -raw sfn_pipeline_arn
+$exec = aws stepfunctions start-execution --state-machine-arn $SM --input '{\"ingest_date\":\"YYYY-MM-DD\"}' --query executionArn --output text
+aws stepfunctions describe-execution --execution-arn $exec --query status --output text
+```
+
+Diagnóstico de fallos: `aws stepfunctions get-execution-history --execution-arn $exec --reverse-order --max-items 6`.
+
+Incidencia conocida: con la integración `.sync`, la salida del job reemplaza el input del estado; para conservar `$.ingest_date` en toda la cadena cada tarea usa `ResultPath` (corregido 2026-07-23).
+
 Pendiente de fases futuras: reprocesamiento desde cuarentena, rotación de credenciales.

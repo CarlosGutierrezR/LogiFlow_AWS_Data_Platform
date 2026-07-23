@@ -82,6 +82,13 @@
 - OBSERVACIÓN: on_time_pct ≈ 0% en todos los transportistas. No es bug del ETL (delay medio positivo bien calculado) sino sesgo del generador (entregas casi siempre tarde). Mejora futura: ajustar offsets temporales en generate_shipments para on-time realista.
 - Coste: job ×2 + 1 crawler + 3 consultas Athena (KB escaneados). Pendiente consolidar en Billing.
 
+## 2026-07-23 — Fase 9: orquestación con Step Functions
+
+- terraform/step_functions.tf: state machine logiflow-dev-batch-pipeline (STANDARD) que encadena landing→raw→processed→curated con integración síncrona (.sync), reintentos (2 intentos, backoff x2, cubre ConcurrentRunsExceededException) y Catch a estado PipelineFailed. Rol de ejecución con permisos solo sobre los 3 jobs.
+- Incidencia resuelta (documentada en runbook): con .sync la salida del job reemplaza el input, perdiendo $.ingest_date en el segundo estado. Solución: ResultPath por tarea para preservar el input a lo largo de la cadena.
+- Evidencia: ejecución end-to-end con input {"ingest_date":"2026-07-23"} → SUCCEEDED en ~5 min (3 jobs en serie, sin carreras ni intervención manual). Resuelve las condiciones de carrera de la Fase 6.
+- Coste: 3 runs de Glue por ejecución del pipeline (DPU-tiempo). El state machine STANDARD factura por transición de estado (céntimos).
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).
