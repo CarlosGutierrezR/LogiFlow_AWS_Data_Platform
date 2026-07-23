@@ -92,7 +92,7 @@
 ## 2026-07-23 — Fase 10: observabilidad (CloudWatch + SNS)
 
 - terraform/observability.tf: tema SNS logiflow-dev-alerts con suscripción email (var.alert_email); alarma pipeline_failed sobre AWS/States ExecutionsFailed (señal principal); 4 alarmas totales (pipeline + numFailedTasks por cada job Glue).
-- Evidencia: 6 recursos creados; alarmas en INSUFFICIENT_DATA (normal sin métricas recientes). Suscripción email en PendingConfirmation → requiere que Carlos pulse "Confirm subscription" en el correo.
+- Evidencia: 6 recursos creados; alarmas en INSUFFICIENT_DATA (normal sin métricas recientes). Suscripción email CONFIRMADA (2026-07-23): list-subscriptions muestra ARN en lugar de PendingConfirmation → notificaciones activas.
 - Limitación documentada: numFailedTasks detecta fallos de tareas Spark, no todos los fallos de job (p.ej. SystemExit). La alarma del pipeline (ExecutionsFailed) es la de referencia y cubre cualquier fallo de la cadena orquestada.
 - Coste: SNS y CloudWatch alarmas a este volumen son céntimos o dentro de free tier.
 
