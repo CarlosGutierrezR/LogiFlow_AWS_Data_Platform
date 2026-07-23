@@ -259,7 +259,7 @@ Diseñado para **coste casi nulo** con datos sintéticos: solo servicios *server
 | 9 | Orquestación con Step Functions | ✅ |
 | 10 | Observabilidad (CloudWatch + SNS) | ✅ |
 | 11 | GitHub + CI/CD | ✅ |
-| 12 | Cierre: costes reales + destrucción controlada | 🔜 |
+| 12 | Cierre: costes reales + destrucción controlada | ✅ |
 | 13+ | Extensiones: streaming, Iceberg, Redshift, QuickSight | 🧭 |
 
 ---

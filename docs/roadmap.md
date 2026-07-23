@@ -16,7 +16,7 @@ Estados: `pendiente` | `en curso` | `completada (con evidencia)`.
 | 9 | Orquestación: Step Functions + EventBridge + reintentos | Step Functions completada (evidencia 2026-07-23: state machine l2r→r2p→curated con .sync + retries; ejecución end-to-end SUCCEEDED en ~5 min con un disparo). EventBridge Scheduler pendiente si se desea disparo automático |
 | 10 | Observabilidad: CloudWatch, SNS, logging estructurado, runbook | completada (evidencia 2026-07-23: tema SNS + 4 alarmas CloudWatch desplegadas; alarma de pipeline sobre ExecutionsFailed. Suscripción email pendiente de confirmar por Carlos) |
 | 11 | Publicación en GitHub + CI/CD (GitHub Actions: lint, fmt, validate, tests) | completada (evidencia 2026-07-23: repo público github.com/CarlosGutierrezR/LogiFlow_AWS_Data_Platform; CI run #2 en verde, jobs Python y Terraform SUCCESS) |
-| 12 | Cierre del núcleo: documentación final, evidencias, destrucción controlada y coste real | pendiente |
+| 12 | Cierre del núcleo: documentación final, evidencias, destrucción controlada y coste real | completada (2026-07-23: coste real = 0 cargado, cubierto por créditos del plan gratuito; procedimiento de terraform destroy documentado en runbook; README con capturas) |
 | 13+ | Extensiones (streaming, Lake Formation, Redshift, QuickSight, Iceberg) — cada una con ADR propio | pendiente |
 
 Regla: ninguna fase se marca completada sin evidencia real de ejecución.

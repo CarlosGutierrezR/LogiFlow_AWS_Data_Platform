@@ -58,4 +58,52 @@ Diagnóstico de fallos: `aws stepfunctions get-execution-history --execution-arn
 
 Incidencia conocida: con la integración `.sync`, la salida del job reemplaza el input del estado; para conservar `$.ingest_date` en toda la cadena cada tarea usa `ResultPath` (corregido 2026-07-23).
 
+## Destrucción segura de toda la infraestructura (Fase 12)
+
+⚠️ **Elimina todos los recursos AWS del proyecto.** Úsalo para no gastar cuando el proyecto no esté en uso; recréalo cuando lo necesites con `terraform apply`.
+
+Los buckets tienen `force_destroy = false` (protección intencionada): `terraform destroy` **fallará** si contienen objetos. Hay que vaciarlos antes. Los buckets con versionado (`raw`, `curated`) requieren borrar también las versiones y los *delete markers*.
+
+### Paso 1 — Vaciar todos los buckets (PowerShell, sesión `aws login` activa)
+
+```powershell
+$acc = (aws sts get-caller-identity --query Account --output text)
+$buckets = @(
+  "logiflow-dev-landing-$acc", "logiflow-dev-raw-$acc",
+  "logiflow-dev-processed-$acc", "logiflow-dev-curated-$acc",
+  "logiflow-dev-quarantine-$acc", "logiflow-dev-artifacts-$acc",
+  "logiflow-dev-athena-results-$acc"
+)
+foreach ($b in $buckets) {
+  Write-Host "Vaciando $b ..."
+  aws s3 rm "s3://$b" --recursive
+  # Purga de versiones y delete markers (buckets con versionado)
+  $vers = aws s3api list-object-versions --bucket $b `
+    --query "Versions[].{Key:Key,VersionId:VersionId}" --output json | ConvertFrom-Json
+  foreach ($o in $vers) { aws s3api delete-object --bucket $b --key $o.Key --version-id $o.VersionId | Out-Null }
+  $marks = aws s3api list-object-versions --bucket $b `
+    --query "DeleteMarkers[].{Key:Key,VersionId:VersionId}" --output json | ConvertFrom-Json
+  foreach ($o in $marks) { aws s3api delete-object --bucket $b --key $o.Key --version-id $o.VersionId | Out-Null }
+}
+```
+
+### Paso 2 — Destruir la infraestructura
+
+```powershell
+cd D:\LogiFlow_AWS_Data_Platform\terraform
+terraform destroy    # revisar el plan; confirmar con 'yes'
+```
+
+Debe terminar con `Destroy complete! Resources: N destroyed.`
+
+### Paso 3 — Verificar que no queda nada facturable
+
+```powershell
+aws s3 ls | Select-String logiflow          # sin resultados
+aws glue get-jobs --query "Jobs[?starts_with(Name, 'logiflow')].Name"   # []
+aws stepfunctions list-state-machines --query "stateMachines[?starts_with(name,'logiflow')].name"  # []
+```
+
+Lo que **no** elimina `terraform destroy` (y no genera coste): el presupuesto `logiflow-zero-spend-budget`, el usuario IAM `carlos-admin` y el estado local de Terraform (`terraform.tfstate`). El estado se conserva a propósito para poder recrear la plataforma.
+
 Pendiente de fases futuras: reprocesamiento desde cuarentena, rotación de credenciales.

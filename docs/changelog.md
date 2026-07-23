@@ -107,6 +107,17 @@
 - CI verificado en verde (run #2, 2026-07-23): job Python (ruff + pytest) y job Terraform (fmt + validate) ambos SUCCESS. El primer run falló por `terraform fmt` en glue_jobs.tf/observability.tf → corregido con `terraform fmt -recursive` (el CI cazó el problema, funcionando como debe).
 - Warnings menores no bloqueantes: actions checkout@v4/setup-python@v5/setup-terraform@v3 usan Node.js 20 (deprecación futura de GitHub). Mejora pendiente: subir a versiones que usen Node 24 cuando estén disponibles.
 
+## 2026-07-23 — README con capturas del pipeline
+
+- Añadida sección "📸 El pipeline en ejecución" con 3 capturas reales (docs/images/): grafo de Step Functions con los 3 estados en verde, historial de ejecuciones (1 correcta ~4:55 min + 2 fallidas depuradas) y detalle de 22 eventos con TaskSucceeded.
+
+## 2026-07-23 — Fase 12: cierre del proyecto
+
+- **Coste real:** 0 cargado. La consola de Facturación confirma "No se cobrará nada a su cuenta del plan gratuito. Los créditos cubren los costos del plan gratuito"; detector de anomalías: None detected. El desglose por servicio aún no consolidado (desfase 24-48 h); registrado sin inventar cifras.
+- **Destrucción controlada:** procedimiento completo en docs/runbook.md — vaciado de los 7 buckets (incluidas versiones de raw/curated, que tienen force_destroy=false) + `terraform destroy` + verificación de que no queda nada facturable.
+- **Núcleo batch COMPLETO** (fases 0-12): plataforma end-to-end desplegada, orquestada, con calidad, observabilidad, IaC, CI/CD y documentación con evidencias. Publicada en github.com/CarlosGutierrezR/LogiFlow_AWS_Data_Platform.
+- Pendientes personales de Carlos (fuera del alcance técnico): MFA de root; ejecutar `terraform destroy` cuando no use el proyecto.
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).
