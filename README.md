@@ -80,6 +80,26 @@ flowchart LR
 
 ---
 
+## 📸 El pipeline en ejecución
+
+<div align="center">
+
+**Orquestación en AWS Step Functions** — los tres jobs de Glue encadenados con `.sync`, reintentos y captura de fallos (`Catch → PipelineFailed`):
+
+<img src="docs/images/step-functions-graph.jpg" alt="Grafo del pipeline en Step Functions (ejecución correcta)" width="720">
+
+**Ejecuciones del state machine** — ejecución completa correcta en ~4:55 min (las dos fallidas corresponden a incidencias reales depuradas y documentadas en el runbook):
+
+<img src="docs/images/step-functions-executions.jpg" alt="Historial de ejecuciones del pipeline" width="820">
+
+**Detalle de eventos** — traza paso a paso de la ejecución con `TaskSucceeded` y enlaces a cada Glue job run:
+
+<img src="docs/images/step-functions-events.jpg" alt="Eventos de la ejecución del pipeline" width="820">
+
+</div>
+
+---
+
 ## 🗂️ Capas del data lake
 
 | Capa | Contenido | Formato | Regla clave |
