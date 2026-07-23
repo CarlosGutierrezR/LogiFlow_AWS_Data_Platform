@@ -22,13 +22,13 @@ from src.data_generator.writers import landing_path
 
 
 def _cfg(tmp_path: Path, **overrides) -> GeneratorConfig:
-    defaults = dict(
-        ingest_date=date(2026, 7, 22),
-        output_dir=tmp_path,
-        num_orders=50,
-        error_rate=0.0,
-        seed=123,
-    )
+    defaults = {
+        "ingest_date": date(2026, 7, 22),
+        "output_dir": tmp_path,
+        "num_orders": 50,
+        "error_rate": 0.0,
+        "seed": 123,
+    }
     defaults.update(overrides)
     return GeneratorConfig(**defaults)
 
@@ -50,9 +50,7 @@ class TestCleanGeneration:
         assert all(r["origin_warehouse_id"] in warehouse_ids for r in data["routes"])
         assert all(o["origin_warehouse_id"] in warehouse_ids for o in data["orders"])
         assert all(s["order_id"] in order_ids for s in data["shipments"])
-        assert all(
-            e["shipment_id"] in shipment_ids for e in data["delivery_events"]
-        )
+        assert all(e["shipment_id"] in shipment_ids for e in data["delivery_events"])
 
     def test_primary_keys_unique_and_patterns(self, tmp_path: Path) -> None:
         data = generate_all(_cfg(tmp_path))
@@ -70,9 +68,7 @@ class TestCleanGeneration:
         data = generate_all(_cfg(tmp_path))
         assert all(o["service_level"] in SERVICE_LEVELS for o in data["orders"])
         assert all(s["status"] in SHIPMENT_STATUSES for s in data["shipments"])
-        assert all(
-            e["event_type"] in EVENT_TYPES for e in data["delivery_events"]
-        )
+        assert all(e["event_type"] in EVENT_TYPES for e in data["delivery_events"])
         assert all(o["total_weight_kg"] > 0 for o in data["orders"])
         assert all(s["cost_eur"] > 0 for s in data["shipments"])
 

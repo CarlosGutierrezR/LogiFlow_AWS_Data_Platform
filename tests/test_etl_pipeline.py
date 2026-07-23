@@ -9,7 +9,6 @@ Requiere pyspark 3.5.x (mismo runtime que Glue 5.0) y Java 11+.
 
 from __future__ import annotations
 
-import json
 from datetime import date
 from pathlib import Path
 
@@ -70,10 +69,14 @@ def pipeline_run(spark, tmp_path_factory):
     assert (
         landing_to_raw.run(
             [
-                "--date", INGEST,
-                "--landing-path", paths["landing"],
-                "--raw-path", paths["raw"],
-                "--batch-id", "batch-test",
+                "--date",
+                INGEST,
+                "--landing-path",
+                paths["landing"],
+                "--raw-path",
+                paths["raw"],
+                "--batch-id",
+                "batch-test",
             ],
             spark=spark,
         )
@@ -82,10 +85,14 @@ def pipeline_run(spark, tmp_path_factory):
     assert (
         raw_to_processed.run(
             [
-                "--date", INGEST,
-                "--raw-path", paths["raw"],
-                "--processed-path", paths["processed"],
-                "--quarantine-path", paths["quarantine"],
+                "--date",
+                INGEST,
+                "--raw-path",
+                paths["raw"],
+                "--processed-path",
+                paths["processed"],
+                "--quarantine-path",
+                paths["quarantine"],
             ],
             spark=spark,
         )
@@ -126,12 +133,7 @@ class TestProcessed:
         paths, _, _ = pipeline_run
         orders = _read(spark, paths["processed"], "orders")
         assert orders.filter("total_weight_kg <= 0").count() == 0
-        assert (
-            orders.filter(
-                "service_level not in ('standard','express','same_day')"
-            ).count()
-            == 0
-        )
+        assert orders.filter("service_level not in ('standard','express','same_day')").count() == 0
         shipments = _read(spark, paths["processed"], "shipments")
         assert (
             shipments.filter(
@@ -156,9 +158,9 @@ class TestReconciliationAndDetection:
             processed_n = _read(spark, paths["processed"], spec.name).count()
             q_df = _read(spark, paths["quarantine"], spec.name)
             quarantined_n = q_df.count() if q_df is not None else 0
-            dedup_n = raw_n - _read(spark, paths["raw"], spec.name).select(
-                spec.pk
-            ).distinct().count()
+            dedup_n = (
+                raw_n - _read(spark, paths["raw"], spec.name).select(spec.pk).distinct().count()
+            )
             assert raw_n == processed_n + quarantined_n + dedup_n, spec.name
 
     def test_all_injected_errors_detected(self, spark, pipeline_run):

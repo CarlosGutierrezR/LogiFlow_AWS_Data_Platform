@@ -1,6 +1,6 @@
 """Escritura de archivos landing según la nomenclatura del contrato:
 
-    {output_dir}/{entidad}/ingest_date=YYYY-MM-DD/{entidad}_YYYYMMDD.csv|jsonl
+{output_dir}/{entidad}/ingest_date=YYYY-MM-DD/{entidad}_YYYYMMDD.csv|jsonl
 """
 
 from __future__ import annotations
@@ -27,9 +27,7 @@ def landing_path(output_dir: Path, entity: str, ingest_date: date) -> Path:
     )
 
 
-def write_entity(
-    output_dir: Path, entity: str, rows: list[dict], ingest_date: date
-) -> Path:
+def write_entity(output_dir: Path, entity: str, rows: list[dict], ingest_date: date) -> Path:
     if not rows:
         raise ValueError(f"Entidad sin filas: {entity}")
     path = landing_path(output_dir, entity, ingest_date)
@@ -62,8 +60,6 @@ def write_manifest(
         "injected_error_count": len(manifest),
         "errors": manifest,
     }
-    path.write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     logger.info("manifiesto de errores escrito: %s (%d errores)", path, len(manifest))
     return path

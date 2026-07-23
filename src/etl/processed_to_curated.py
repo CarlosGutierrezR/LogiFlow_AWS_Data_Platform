@@ -68,9 +68,7 @@ def build_dim_route(routes: DataFrame, warehouses: DataFrame) -> DataFrame:
     )
 
 
-def build_fact_shipments(
-    shipments: DataFrame, orders: DataFrame, routes: DataFrame
-) -> DataFrame:
+def build_fact_shipments(shipments: DataFrame, orders: DataFrame, routes: DataFrame) -> DataFrame:
     order_attrs = orders.select(
         "order_id",
         "customer_id",
@@ -87,17 +85,16 @@ def build_fact_shipments(
         "expected_transit_hours",
     )
 
-    fact = (
-        shipments.join(order_attrs, on="order_id", how="left")
-        .join(route_attrs, on="route_id", how="left")
+    fact = shipments.join(order_attrs, on="order_id", how="left").join(
+        route_attrs, on="route_id", how="left"
     )
 
-    delay_seconds = F.col("actual_delivery_ts").cast("long") - F.col(
-        "planned_delivery_ts"
-    ).cast("long")
-    transit_seconds = F.col("actual_delivery_ts").cast("long") - F.col(
-        "actual_departure_ts"
-    ).cast("long")
+    delay_seconds = F.col("actual_delivery_ts").cast("long") - F.col("planned_delivery_ts").cast(
+        "long"
+    )
+    transit_seconds = F.col("actual_delivery_ts").cast("long") - F.col("actual_departure_ts").cast(
+        "long"
+    )
 
     return fact.select(
         "shipment_id",
@@ -130,9 +127,7 @@ def build_fact_shipments(
 
 
 def run(argv: list[str] | None = None, spark: SparkSession | None = None) -> int:
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s"
-    )
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     parser = argparse.ArgumentParser(description="LogiFlow ETL: processed -> curated")
     parser.add_argument("--date", required=True)
     parser.add_argument("--processed-path", required=True)
@@ -141,10 +136,7 @@ def run(argv: list[str] | None = None, spark: SparkSession | None = None) -> int
 
     own_spark = spark is None
     if own_spark:
-        spark = (
-            SparkSession.builder.appName("logiflow-processed-to-curated")
-            .getOrCreate()
-        )
+        spark = SparkSession.builder.appName("logiflow-processed-to-curated").getOrCreate()
 
     try:
         warehouses = _read(spark, args.processed_path, "warehouses", args.date)

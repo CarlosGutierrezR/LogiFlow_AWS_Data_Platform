@@ -93,9 +93,7 @@ def test_changed_file_is_reuploaded(tmp_path: Path) -> None:
     client = FakeS3Client()
     upload_partition(client, "bucket-x", local, INGEST)
 
-    target = (
-        local / "orders" / f"ingest_date={INGEST.isoformat()}" / "orders_20260722.csv"
-    )
+    target = local / "orders" / f"ingest_date={INGEST.isoformat()}" / "orders_20260722.csv"
     target.write_text("contenido-mas-largo-que-el-anterior\n", encoding="utf-8")
 
     result = upload_partition(client, "bucket-x", local, INGEST)

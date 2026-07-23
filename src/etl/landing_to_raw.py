@@ -32,9 +32,7 @@ _JSONL_ENTITIES = {"delivery_events"}
 
 def _string_schema(spec: EntitySpec) -> StructType:
     """Esquema todo-string: raw no interpreta tipos, solo conserva."""
-    return StructType(
-        [StructField(name, StringType(), True) for name in spec.fields]
-    )
+    return StructType([StructField(name, StringType(), True) for name in spec.fields])
 
 
 def read_landing_entity(
@@ -47,9 +45,7 @@ def read_landing_entity(
     return spark.read.schema(schema).option("header", True).csv(path)
 
 
-def add_lineage(
-    df: DataFrame, ingest_date: str, batch_id: str, load_ts: str
-) -> DataFrame:
+def add_lineage(df: DataFrame, ingest_date: str, batch_id: str, load_ts: str) -> DataFrame:
     return (
         df.withColumn("_ingest_date", F.lit(ingest_date))
         .withColumn("_source_file", F.input_file_name())
@@ -72,16 +68,12 @@ def run_entity(
     out_path = f"{raw_path}/{spec.name}/ingest_date={ingest_date}/"
     enriched.write.mode("overwrite").parquet(out_path)
     count = spark.read.parquet(out_path).count()
-    logger.info(
-        "entidad=%s filas_raw=%d destino=%s", spec.name, count, out_path
-    )
+    logger.info("entidad=%s filas_raw=%d destino=%s", spec.name, count, out_path)
     return count
 
 
 def run(argv: list[str] | None = None, spark: SparkSession | None = None) -> int:
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s"
-    )
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     parser = argparse.ArgumentParser(description="LogiFlow ETL: landing -> raw")
     parser.add_argument("--date", required=True, help="Fecha de ingesta YYYY-MM-DD")
     parser.add_argument("--landing-path", required=True)
@@ -94,10 +86,7 @@ def run(argv: list[str] | None = None, spark: SparkSession | None = None) -> int
 
     own_spark = spark is None
     if own_spark:
-        spark = (
-            SparkSession.builder.appName("logiflow-landing-to-raw")
-            .getOrCreate()
-        )
+        spark = SparkSession.builder.appName("logiflow-landing-to-raw").getOrCreate()
 
     try:
         totals = {

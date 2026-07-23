@@ -96,6 +96,15 @@
 - Limitación documentada: numFailedTasks detecta fallos de tareas Spark, no todos los fallos de job (p.ej. SystemExit). La alarma del pipeline (ExecutionsFailed) es la de referencia y cubre cualquier fallo de la cadena orquestada.
 - Coste: SNS y CloudWatch alarmas a este volumen son céntimos o dentro de free tier.
 
+## 2026-07-23 — Fase 11: CI/CD con GitHub Actions
+
+- .github/workflows/ci.yml: job Python (ruff check + ruff format --check + pytest) y job Terraform (fmt -check + init -backend=false + validate). Sin credenciales AWS: no despliega nada.
+- pyproject.toml (config ruff + pytest) y requirements-dev.txt (pytest, ruff fijados).
+- Ruff aplicado a todo el código: "All checks passed!" y 21 archivos formateados. Correcciones: eliminada comprensión/dict innecesarios; formato uniforme.
+- Verificación: 19 tests no-Spark en verde tras el formateo (los de PySpark se omiten en CI por importorskip; se ejecutan en local con Java).
+- README reescrito: badge de CI, capacidades demostradas, stack, estructura real y cómo ejecutar el pipeline.
+- Pendiente (acción de Carlos): crear repo en GitHub y `git push`; verificar que el workflow pasa en verde.
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).

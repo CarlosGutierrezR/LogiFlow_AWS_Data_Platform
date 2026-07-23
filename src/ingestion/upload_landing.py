@@ -78,17 +78,13 @@ def _object_exists_same_size(s3_client, bucket: str, key: str, size: int) -> boo
         response = getattr(exc, "response", None)
         if isinstance(response, dict):
             error_code = response.get("Error", {}).get("Code", "")
-        if error_code in ("404", "NoSuchKey", "NotFound") or isinstance(
-            exc, KeyError
-        ):
+        if error_code in ("404", "NoSuchKey", "NotFound") or isinstance(exc, KeyError):
             return False
         raise
     return int(head.get("ContentLength", -1)) == size
 
 
-def upload_partition(
-    s3_client, bucket: str, local_dir: Path, ingest_date: date
-) -> UploadResult:
+def upload_partition(s3_client, bucket: str, local_dir: Path, ingest_date: date) -> UploadResult:
     files = collect_local_files(local_dir, ingest_date)
     result = UploadResult(uploaded=[], skipped=[])
 

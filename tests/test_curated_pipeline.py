@@ -57,19 +57,26 @@ def curated_run(spark, tmp_path_factory):
     )
     raw_to_processed.run(
         [
-            "--date", INGEST,
-            "--raw-path", paths["raw"],
-            "--processed-path", paths["processed"],
-            "--quarantine-path", quarantine,
+            "--date",
+            INGEST,
+            "--raw-path",
+            paths["raw"],
+            "--processed-path",
+            paths["processed"],
+            "--quarantine-path",
+            quarantine,
         ],
         spark=spark,
     )
     assert (
         processed_to_curated.run(
             [
-                "--date", INGEST,
-                "--processed-path", paths["processed"],
-                "--curated-path", paths["curated"],
+                "--date",
+                INGEST,
+                "--processed-path",
+                paths["processed"],
+                "--curated-path",
+                paths["curated"],
             ],
             spark=spark,
         )
@@ -103,17 +110,14 @@ def test_fact_metrics_coherent(spark, curated_run):
     assert fact.filter("on_time is not null and actual_delivery_ts is null").count() == 0
     # el retraso existe exactamente cuando hay entrega real
     assert (
-        fact.filter("delivery_delay_hours is not null and actual_delivery_ts is null").count()
-        == 0
+        fact.filter("delivery_delay_hours is not null and actual_delivery_ts is null").count() == 0
     )
     # coherencia on_time vs delay
     assert fact.filter("on_time = true and delivery_delay_hours > 0").count() == 0
     assert fact.filter("on_time = false and delivery_delay_hours <= 0").count() == 0
     # incidentes = estados de incidencia
     assert (
-        fact.filter(
-            "is_incident = true and status not in ('delayed','lost','returned')"
-        ).count()
+        fact.filter("is_incident = true and status not in ('delayed','lost','returned')").count()
         == 0
     )
 

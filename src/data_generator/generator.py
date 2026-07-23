@@ -14,7 +14,6 @@ from datetime import date, datetime, time, timedelta, timezone
 from .config import (
     CARRIERS,
     CITIES,
-    EVENT_TYPES,
     SERVICE_LEVELS,
     GeneratorConfig,
 )
@@ -56,9 +55,7 @@ def generate_warehouses(cfg: GeneratorConfig, rng: random.Random) -> list[dict]:
     return rows
 
 
-def generate_routes(
-    cfg: GeneratorConfig, rng: random.Random, warehouses: list[dict]
-) -> list[dict]:
+def generate_routes(cfg: GeneratorConfig, rng: random.Random, warehouses: list[dict]) -> list[dict]:
     rows: list[dict] = []
     for i in range(1, cfg.num_routes + 1):
         origin = rng.choice(warehouses)
@@ -77,20 +74,14 @@ def generate_routes(
     return rows
 
 
-def generate_orders(
-    cfg: GeneratorConfig, rng: random.Random, warehouses: list[dict]
-) -> list[dict]:
+def generate_orders(cfg: GeneratorConfig, rng: random.Random, warehouses: list[dict]) -> list[dict]:
     day_compact = cfg.ingest_date.strftime("%Y%m%d")
     base = datetime.combine(cfg.ingest_date, time(6, 0), tzinfo=timezone.utc)
     rows: list[dict] = []
     for i in range(1, cfg.num_orders + 1):
-        order_ts = base + timedelta(
-            minutes=rng.randint(0, 14 * 60), seconds=rng.randint(0, 59)
-        )
+        order_ts = base + timedelta(minutes=rng.randint(0, 14 * 60), seconds=rng.randint(0, 59))
         dest_city, _ = rng.choice(CITIES)
-        declared: str = (
-            str(round(rng.uniform(10, 3000), 2)) if rng.random() > 0.15 else ""
-        )
+        declared: str = str(round(rng.uniform(10, 3000), 2)) if rng.random() > 0.15 else ""
         rows.append(
             {
                 "order_id": f"ORD-{day_compact}-{i:05d}",
@@ -118,13 +109,9 @@ def generate_shipments(
     rows: list[dict] = []
     for i, order in enumerate(orders, start=1):
         route = rng.choice(routes)
-        order_ts = datetime.strptime(order["order_ts"], _TS_FORMAT).replace(
-            tzinfo=timezone.utc
-        )
+        order_ts = datetime.strptime(order["order_ts"], _TS_FORMAT).replace(tzinfo=timezone.utc)
         planned_departure = order_ts + timedelta(hours=rng.randint(1, 12))
-        planned_delivery = planned_departure + timedelta(
-            hours=int(route["expected_transit_hours"])
-        )
+        planned_delivery = planned_departure + timedelta(hours=int(route["expected_transit_hours"]))
         status = rng.choices(
             ["delivered", "in_transit", "delayed", "created", "returned", "lost"],
             weights=[55, 20, 12, 8, 4, 1],
@@ -133,9 +120,7 @@ def generate_shipments(
         actual_departure = ""
         actual_delivery = ""
         if status not in ("created",):
-            actual_departure_dt = planned_departure + timedelta(
-                minutes=rng.randint(-30, 180)
-            )
+            actual_departure_dt = planned_departure + timedelta(minutes=rng.randint(-30, 180))
             actual_departure = _fmt(actual_departure_dt)
             if status in ("delivered", "returned"):
                 actual_delivery = _fmt(
@@ -154,9 +139,7 @@ def generate_shipments(
                 "actual_departure_ts": actual_departure,
                 "actual_delivery_ts": actual_delivery,
                 "status": status,
-                "cost_eur": round(
-                    5 + float(route["distance_km"]) * rng.uniform(0.02, 0.09), 2
-                ),
+                "cost_eur": round(5 + float(route["distance_km"]) * rng.uniform(0.02, 0.09), 2),
             }
         )
     return rows
@@ -169,9 +152,9 @@ def generate_delivery_events(
     for shipment in shipments:
         if not shipment["actual_departure_ts"]:
             continue  # envíos aún no salidos no tienen eventos
-        start = datetime.strptime(
-            shipment["actual_departure_ts"], _TS_FORMAT
-        ).replace(tzinfo=timezone.utc)
+        start = datetime.strptime(shipment["actual_departure_ts"], _TS_FORMAT).replace(
+            tzinfo=timezone.utc
+        )
 
         if shipment["status"] == "delivered":
             sequence = _HAPPY_PATH

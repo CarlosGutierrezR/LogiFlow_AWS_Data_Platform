@@ -15,7 +15,7 @@ Estados: `pendiente` | `en curso` | `completada (con evidencia)`.
 | 8 | Modelo dimensional en curated + Athena | completada (evidencia 2026-07-22: job curated ×2 días SUCCEEDED, 3 tablas dimensionales catalogadas, 3 KPIs ejecutados en Athena con resultados) |
 | 9 | Orquestación: Step Functions + EventBridge + reintentos | Step Functions completada (evidencia 2026-07-23: state machine l2r→r2p→curated con .sync + retries; ejecución end-to-end SUCCEEDED en ~5 min con un disparo). EventBridge Scheduler pendiente si se desea disparo automático |
 | 10 | Observabilidad: CloudWatch, SNS, logging estructurado, runbook | completada (evidencia 2026-07-23: tema SNS + 4 alarmas CloudWatch desplegadas; alarma de pipeline sobre ExecutionsFailed. Suscripción email pendiente de confirmar por Carlos) |
-| 11 | Publicación en GitHub + CI/CD (GitHub Actions: lint, fmt, validate, tests) | pendiente |
+| 11 | Publicación en GitHub + CI/CD (GitHub Actions: lint, fmt, validate, tests) | código listo (workflow ci.yml, ruff limpio, 19 tests no-Spark verdes); pendiente push a GitHub y verde en Actions |
 | 12 | Cierre del núcleo: documentación final, evidencias, destrucción controlada y coste real | pendiente |
 | 13+ | Extensiones (streaming, Lake Formation, Redshift, QuickSight, Iceberg) — cada una con ADR propio | pendiente |
 

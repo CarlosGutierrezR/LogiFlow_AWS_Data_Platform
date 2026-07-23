@@ -77,11 +77,7 @@ def add_error_flags(df: DataFrame, spec: EntitySpec) -> DataFrame:
         reasons.append(F.when(unparseable, F.lit(f"E07:{name}:no_parseable")))
 
     for name, allowed in spec.enums.items():
-        bad = (
-            F.col(name).isNotNull()
-            & (F.col(name) != "")
-            & ~F.col(name).isin(*allowed)
-        )
+        bad = F.col(name).isNotNull() & (F.col(name) != "") & ~F.col(name).isin(*allowed)
         reasons.append(F.when(bad, F.lit(f"E06:{name}:fuera_de_enum")))
 
     for name, (low, high) in spec.positive_ranges.items():
@@ -95,18 +91,12 @@ def add_error_flags(df: DataFrame, spec: EntitySpec) -> DataFrame:
     for before_f, after_f in spec.temporal_order:
         b, a = F.col(f"_t_{before_f}"), F.col(f"_t_{after_f}")
         bad = b.isNotNull() & a.isNotNull() & (a <= b)
-        reasons.append(
-            F.when(bad, F.lit(f"E05:{after_f}:incoherencia_temporal"))
-        )
+        reasons.append(F.when(bad, F.lit(f"E05:{after_f}:incoherencia_temporal")))
 
-    return typed.withColumn(
-        _ERR, F.array_compact(F.array(*[r for r in reasons]))
-    )
+    return typed.withColumn(_ERR, F.array_compact(F.array(*reasons)))
 
 
-def add_fk_errors(
-    df: DataFrame, spec: EntitySpec, valid_refs: dict[str, DataFrame]
-) -> DataFrame:
+def add_fk_errors(df: DataFrame, spec: EntitySpec, valid_refs: dict[str, DataFrame]) -> DataFrame:
     """Marca E03 si la FK no existe entre las filas válidas de la referencia."""
     result = df
     for fk_field, (ref_entity, ref_field) in spec.foreign_keys.items():
@@ -123,9 +113,7 @@ def add_fk_errors(
             _ERR,
             F.when(
                 broken,
-                F.array_union(
-                    F.col(_ERR), F.array(F.lit(f"E03:{fk_field}:fk_rota"))
-                ),
+                F.array_union(F.col(_ERR), F.array(F.lit(f"E03:{fk_field}:fk_rota"))),
             ).otherwise(F.col(_ERR)),
         ).drop(marker)
     return result
@@ -160,9 +148,7 @@ def run_entity(
     ingest_date: str,
     valid_refs: dict[str, DataFrame],
 ) -> dict[str, int]:
-    raw_df = spark.read.parquet(
-        f"{paths['raw']}/{spec.name}/ingest_date={ingest_date}/"
-    )
+    raw_df = spark.read.parquet(f"{paths['raw']}/{spec.name}/ingest_date={ingest_date}/")
     raw_count = raw_df.count()
 
     deduped, dup_removed = deduplicate(raw_df, spec)
@@ -176,9 +162,7 @@ def run_entity(
 
     invalid_count = invalid.count()
     if invalid_count > 0:
-        select_quarantine(invalid, spec).write.mode("overwrite").parquet(
-            quarantine_out
-        )
+        select_quarantine(invalid, spec).write.mode("overwrite").parquet(quarantine_out)
 
     valid_count = spark.read.parquet(processed_out).count()
 
@@ -204,9 +188,7 @@ def run_entity(
 
 
 def run(argv: list[str] | None = None, spark: SparkSession | None = None) -> int:
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s"
-    )
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
     parser = argparse.ArgumentParser(description="LogiFlow ETL: raw -> processed")
     parser.add_argument("--date", required=True)
     parser.add_argument("--raw-path", required=True)
@@ -222,10 +204,7 @@ def run(argv: list[str] | None = None, spark: SparkSession | None = None) -> int
 
     own_spark = spark is None
     if own_spark:
-        spark = (
-            SparkSession.builder.appName("logiflow-raw-to-processed")
-            .getOrCreate()
-        )
+        spark = SparkSession.builder.appName("logiflow-raw-to-processed").getOrCreate()
 
     try:
         valid_refs: dict[str, DataFrame] = {}

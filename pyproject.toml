@@ -1,0 +1,20 @@
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+# El SDK de Glue inyecta símbolos en runtime; los scripts se prueban en local.
+extend-exclude = [".terraform", "data"]
+
+[tool.ruff.lint]
+# Conjunto pragmático: errores, imports, bugbear, comprensiones, pyupgrade.
+select = ["E", "F", "I", "B", "C4", "UP", "W"]
+ignore = [
+  "E501", # longitud de línea: la controla el formatter
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Los tests pueden usar imports tras skip y asserts largos.
+"tests/*" = ["E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

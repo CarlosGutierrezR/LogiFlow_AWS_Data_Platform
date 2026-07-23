@@ -1,0 +1,60 @@
+name: CI
+
+# Validación en cada push y pull request a main.
+# No requiere credenciales AWS: terraform validate y los tests no despliegan nada.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python (lint + tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Ruff (lint)
+        run: ruff check .
+
+      - name: Ruff (format check)
+        run: ruff format --check .
+
+      # Los tests de PySpark usan importorskip: se omiten al no instalar Spark
+      # aquí (se ejecutan localmente / en una máquina con Java). Los tests del
+      # generador y de la ingestión (sin Spark) sí corren y deben pasar.
+      - name: Pytest (unitarios sin Spark)
+        run: pytest tests/ -v
+
+  terraform:
+    name: Terraform (fmt + validate)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.15.8"
+
+      - name: Terraform fmt
+        run: terraform -chdir=terraform fmt -check -recursive
+
+      - name: Terraform init (sin backend)
+        run: terraform -chdir=terraform init -backend=false
+
+      - name: Terraform validate
+        run: terraform -chdir=terraform validate

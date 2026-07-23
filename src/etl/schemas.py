@@ -24,9 +24,7 @@ class EntitySpec:
     required: tuple[str, ...]
     enums: dict[str, tuple[str, ...]] = field(default_factory=dict)
     # campo -> (mínimo exclusivo permitido, máximo inclusivo o None)
-    positive_ranges: dict[str, tuple[float, float | None]] = field(
-        default_factory=dict
-    )
+    positive_ranges: dict[str, tuple[float, float | None]] = field(default_factory=dict)
     # pares (antes, después): después debe ser > antes si ambos presentes
     temporal_order: tuple[tuple[str, str], ...] = ()
     # campo fk -> (entidad referenciada, campo referenciado)
