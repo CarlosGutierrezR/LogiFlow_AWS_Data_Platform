@@ -6,3 +6,7 @@ aws_region   = "eu-west-1"
 project_name = "logiflow"
 environment  = "dev"
 owner        = "carlos-gutierrez"
+
+# Rulesets de Glue Data Quality. Ponlo a true SOLO después de que el crawler
+# de processed haya catalogado sus tablas (ver docs/runbook.md).
+enable_dq_rulesets = true

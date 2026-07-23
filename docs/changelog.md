@@ -72,6 +72,16 @@
 - La validación custom del ETL (F6) y la verificación gestionada (Glue DQ) quedan como doble control de calidad, cada una con su rol: la primera limpia y pone en cuarentena, la segunda certifica.
 - Coste: 1 run de crawler + 1 evaluación DQ (DPU-tiempo, céntimos). Pendiente consolidar importes reales en Billing.
 
+## 2026-07-22 — Fase 8: modelo dimensional (curated) + Athena
+
+- src/etl/processed_to_curated.py: dim_warehouse, dim_route (enriquecida con ciudad de origen), fact_shipments con métricas de negocio (delivery_delay_hours, actual_transit_hours, on_time, is_incident); reconciliación fact == processed.shipments.
+- Verificación local de la lógica curated (troceada por límite de 45s del sandbox): reconcile True, dim_route sin nulos, coherencia on_time/delay/incident, sin claves nulas. Suite completa test_curated_pipeline.py queda para CI/máquina más rápida.
+- terraform: job processed-to-curated (Glue 5.0), crawler+db curated, Athena workgroup (corte 1 GB/consulta, resultados cifrados con expiración 7d). Rol ETL ampliado a curated. ops/athena_queries/kpis.sql con 4 KPIs.
+- Fix: variable enable_dq_rulesets movida a terraform.tfvars (antes cada apply sin -var borraba los rulesets DQ). tfvars no versionado; example actualizado.
+- Evidencia: 2 días curated SUCCEEDED; 3 tablas catalogadas; 3 KPIs ejecutados en Athena (rendimiento por transportista, incidencias por almacén, estado×servicio) con resultados coherentes.
+- OBSERVACIÓN: on_time_pct ≈ 0% en todos los transportistas. No es bug del ETL (delay medio positivo bien calculado) sino sesgo del generador (entregas casi siempre tarde). Mejora futura: ajustar offsets temporales en generate_shipments para on-time realista.
+- Coste: job ×2 + 1 crawler + 3 consultas Athena (KB escaneados). Pendiente consolidar en Billing.
+
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
 - Estructura inicial del proyecto y documentación base (charter, arquitectura, roadmap, seguridad, costes).
