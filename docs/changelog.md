@@ -103,7 +103,9 @@
 - Ruff aplicado a todo el código: "All checks passed!" y 21 archivos formateados. Correcciones: eliminada comprensión/dict innecesarios; formato uniforme.
 - Verificación: 19 tests no-Spark en verde tras el formateo (los de PySpark se omiten en CI por importorskip; se ejecutan en local con Java).
 - README reescrito: badge de CI, capacidades demostradas, stack, estructura real y cómo ejecutar el pipeline.
-- Pendiente (acción de Carlos): crear repo en GitHub y `git push`; verificar que el workflow pasa en verde.
+- Publicado en GitHub: github.com/CarlosGutierrezR/LogiFlow_AWS_Data_Platform (rama main, 12 commits).
+- CI verificado en verde (run #2, 2026-07-23): job Python (ruff + pytest) y job Terraform (fmt + validate) ambos SUCCESS. El primer run falló por `terraform fmt` en glue_jobs.tf/observability.tf → corregido con `terraform fmt -recursive` (el CI cazó el problema, funcionando como debe).
+- Warnings menores no bloqueantes: actions checkout@v4/setup-python@v5/setup-terraform@v3 usan Node.js 20 (deprecación futura de GitHub). Mejora pendiente: subir a versiones que usen Node 24 cuando estén disponibles.
 
 ## 2026-07-22 — Fase 0: fundación del repositorio
 
