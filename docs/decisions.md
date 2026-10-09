@@ -41,14 +41,14 @@ Contexto original:
 - **Decisión:** crear cuenta personal siguiendo docs/aws-account-setup.md: MFA en root, root solo para lo imprescindible, identidad de trabajo con IAM Identity Center (o usuario IAM con MFA como alternativa), AWS Budgets con alertas antes de crear cualquier recurso.
 - **Consecuencias:** la Fase 1 (bootstrap de Terraform) queda bloqueada hasta completar esta configuración con evidencia.
 
-## ADR-005 — Autenticación CLI con `aws login` y Agent Toolkit for AWS
+## ADR-005 — Autenticación CLI con `aws login`
 
 - **Fecha:** 2026-07-22
 - **Estado:** aprobada
-- **Contexto:** AWS publicó `aws login` (nov. 2025, CLI ≥ 2.32.0): credenciales temporales vinculadas a la sesión de consola del navegador, sin access keys permanentes. El Agent Toolkit for AWS (jun. 2026, `aws configure agent-toolkit`, servicio solo en us-east-1) configura MCP server y skills para agentes de código.
-- **Decisión:** usar `aws login` como método de autenticación de la CLI (sustituye el flujo `aws configure sso` previsto), siempre iniciando sesión con el usuario de trabajo de Identity Center, nunca con root. Instalar el Agent Toolkit como herramienta de desarrollo. El archivo de reglas del toolkit (paso 7 del setup) se revisará antes de incorporarlo a CLAUDE.md por posible conflicto con las reglas propias del proyecto.
-- **Consecuencias:** sin claves de acceso de larga duración en la máquina local; la región del toolkit (us-east-1) es independiente de la región del proyecto (ADR-002).
-- **Referencias:** https://aws.amazon.com/blogs/security/simplified-developer-access-to-aws-with-aws-login · https://aws.amazon.com/about-aws/whats-new/2026/06/aws-cli-agent-toolkit/
+- **Contexto:** AWS publicó `aws login` (nov. 2025, CLI ≥ 2.32.0): credenciales temporales vinculadas a la sesión de consola del navegador, sin access keys permanentes.
+- **Decisión:** usar `aws login` como método de autenticación de la CLI (sustituye el flujo `aws configure sso` previsto), siempre iniciando sesión con el usuario de trabajo de Identity Center, nunca con root.
+- **Consecuencias:** sin claves de acceso de larga duración en la máquina local.
+- **Referencias:** https://aws.amazon.com/blogs/security/simplified-developer-access-to-aws-with-aws-login
 
 ## ADR-006 — Usuario IAM clásico en lugar de IAM Identity Center
 

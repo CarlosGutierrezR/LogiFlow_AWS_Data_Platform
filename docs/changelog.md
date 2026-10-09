@@ -6,7 +6,7 @@
 - Presupuesto `logiflow-zero-spend-budget` creado (plantilla gasto cero, alerta >0,01 USD por email). Confirmado por la consola.
 - Preferencias de alertas activadas: nivel gratuito + alertas de facturación de CloudWatch. Confirmado por la consola.
 - Incidente de seguridad: contraseña root expuesta en captura durante la sesión de trabajo → pendiente rotación de contraseña y MFA (bloqueado ~24 h por política según el usuario).
-- Pendiente: MFA root, cambio de contraseña, IAM Identity Center, AWS CLI + Agent Toolkit (ADR-005).
+- Pendiente: MFA root, cambio de contraseña, IAM Identity Center, AWS CLI con `aws login` (ADR-005).
 
 ## 2026-07-22 — Fase 1 cerrada (con una excepción)
 
