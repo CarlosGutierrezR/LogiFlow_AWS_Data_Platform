@@ -33,11 +33,34 @@ jobs:
       - name: Ruff (format check)
         run: ruff format --check .
 
-      # Los tests de PySpark usan importorskip: se omiten al no instalar Spark
-      # aquí (se ejecutan localmente / en una máquina con Java). Los tests del
-      # generador y de la ingestión (sin Spark) sí corren y deben pasar.
+      # Sin Spark: los tests de PySpark se omiten aquí (importorskip) y se
+      # ejecutan en el job "spark".
       - name: Pytest (unitarios sin Spark)
         run: pytest tests/ -v
+
+  spark:
+    name: PySpark (ETL end-to-end)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dev dependencies + PySpark 3.5 (runtime de Glue 5.0)
+        run: pip install -r requirements-dev.txt "pyspark==3.5.*"
+
+      # -rs muestra los tests omitidos; aquí no debería omitirse ninguno.
+      - name: Pytest (suite completa con Spark)
+        run: pytest tests/ -v -rs
 
   terraform:
     name: Terraform (fmt + validate)
