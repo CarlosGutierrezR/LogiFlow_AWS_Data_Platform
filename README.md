@@ -286,7 +286,7 @@ Diseñado para **coste casi nulo** con datos sintéticos: solo servicios *server
 
 **Carlos Alberto Gutiérrez Rondón** — Data Engineer
 
-Ingeniero de Sistemas · Máster en Ingeniería Informática (UGR)
+Ingeniero de Sistemas · Máster en Ciberseguridad · Máster en Ingeniería Informática (UGR, en curso)
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-carlosgutierrez--rondon-0A66C2?logo=linkedin&logoColor=white)](https://www.linkedin.com/in/carlosgutierrez-rondon)
 [![GitHub](https://img.shields.io/badge/GitHub-CarlosGutierrezR-181717?logo=github&logoColor=white)](https://github.com/CarlosGutierrezR)
